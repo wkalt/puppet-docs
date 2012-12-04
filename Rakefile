@@ -33,10 +33,13 @@ task :install => dependencies.map { |d| "install:#{d}" }
 
 desc "Generate the documentation"
 task :generate do
-  system("rm -rf output")
+  
+  system("rm -rf output/*")
   Dir.chdir("source")
+  FileUtils.cp_r("../marionette-collective/website", "mcollective")
   system("../vendor/gems/jekyll-0.11.2/bin/jekyll --kramdown ../output")
   Rake::Task['references:symlink'].invoke
+  FileUtils.rm_rf("mcollective")
   Dir.chdir("..")
 end
 
