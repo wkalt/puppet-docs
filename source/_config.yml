@@ -1,5 +1,5 @@
 ---
-#pygments: true
+pygments: true
 defaultnav: 
   /: quick_nav.html
   /mcollective: mcollective_menu.html
