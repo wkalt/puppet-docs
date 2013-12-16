@@ -31,9 +31,9 @@ The CA certificate and key are located under that directory as `ca/ca_crt.pem` a
 You're going to need to create a few new files before generating the new keys:
 
 {% highlight console %}
-[root@master ssl]# touch index.txt
-[root@master ssl]# echo 00 > serial
-[root@master ssl]# mkdir -p newcerts
+[root@master ssl]$ touch index.txt
+[root@master ssl]$ echo 00 > serial
+[root@master ssl]$ mkdir -p newcerts
 {% endhighlight %}
 
 You'll also need an OpenSSL configuration file to specify some of the options for your new certificate. The following example should be fine as-is, so just copy it to your SSL directory as `openssl.cnf`:
@@ -72,7 +72,7 @@ keyUsage               = keyCertSign, cRLSign
 Next, convert your existing certificate into a certificate signing request (CSR):
 
 {% highlight console %}
-[root@master ssl]# openssl x509 -x509toreq -in certs/ca.pem -signkey ca/ca_key.pem -out certreq.csr
+[root@master ssl]$ openssl x509 -x509toreq -in certs/ca.pem -signkey ca/ca_key.pem -out certreq.csr
 Getting request Private Key
 Generating certificate request
 {% endhighlight %}
@@ -80,7 +80,7 @@ Generating certificate request
 Finally, sign the CSR to generate a new certificate. You can modify the `-days` flag to set the new expiration date, or use the provided value of ten years:
 
 {% highlight console %}
-[root@master ssl]# openssl ca -in certreq.csr -keyfile ca/ca_key.pem -days 3650 -out newcert.pem -config ./openssl.cnf
+[root@master ssl]$ openssl ca -in certreq.csr -keyfile ca/ca_key.pem -days 3650 -out newcert.pem -config ./openssl.cnf
 {% endhighlight %}
 
 
@@ -88,9 +88,9 @@ Finally, sign the CSR to generate a new certificate. You can modify the `-days` 
 Before you replace your existing certificate, you'll want to make sure that the new one is able to verify your nodes' certificates. Choose any agent certificate file from the `ca/signed` directory for the following commands. The example uses `agent.pem`, but you should replace that with the actual filename:
 
 {% highlight console %}
-[root@master ssl]# openssl verify -CAfile ./certs/ca.pem ca/signed/agent.pem  
+[root@master ssl]$ openssl verify -CAfile ./certs/ca.pem ca/signed/agent.pem  
 ca/signed/agent.pem: OK
-[root@master ssl]# openssl verify -CAfile ./newcert.pem ca/signed/agent.pem
+[root@master ssl]$ openssl verify -CAfile ./newcert.pem ca/signed/agent.pem
 ca/signed/agent.pem: OK
 {% endhighlight %}
 
@@ -100,13 +100,13 @@ If you got `OK` both times then you're ready to move on to the next step.
 As a final precaution, it's a good idea to back up your existing certificate in case something unexpected happens and your new certificate turns out to be unusable:
 	
 {% highlight console %}
-[root@master ssl]# cp ca/ca_crt.pem{,.bak}
+[root@master ssl]$ cp ca/ca_crt.pem{,.bak}
 {% endhighlight %}
 
 Now you can safely overwrite the old certificate with the new one:
 
 {% highlight console %}
-[root@master ssl]# cp newcert.pem ca/ca_crt.pem
+[root@master ssl]$ cp newcert.pem ca/ca_crt.pem
 {% endhighlight %}
 
 
@@ -115,15 +115,15 @@ Redistributing the new CA Certificate to Agent Nodes
 At this point, your agent nodes all have an out-of-date CA certificate for the puppet master and puppet runs will fail. The most straightforward way to fix this is to carry out the following steps on every agent node (replace `master` with the hostname of the puppet CA master if necessary):
 
 {% highlight console %}
-root@agent ssl]# rm certs/ca.pem
-root@agent ssl]# puppet agent -t --noop
+[root@agent ssl]$ rm certs/ca.pem
+[root@agent ssl]$ puppet agent -t --noop
 {% endhighlight %}
 
 If you're using a version of puppet greater than 3.4.0-rc4 and the last command didn't result in any errors, then no other steps are necessary. 
 
 Otherwise, you'll need to get the new CA certificate (`ca/ca_crt.pem`) from the master manually. The puppet API makes that file accessible over https, so you can copy it over with `curl`:
 
-{% highlight puppet %}
-root@agent ssl]# curl --insecure -H 'Accept: s' https://master:8140/production/certificate/ca >certs/ca.pem
+{% highlight console %}
+[root@agent ssl]$ curl --insecure -H 'Accept: s' https://master:8140/production/certificate/ca >certs/ca.pem
 {% endhighlight %}
 

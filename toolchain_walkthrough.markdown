@@ -38,7 +38,7 @@ For working with the puppet-docs repository from day to day, we recommend:
 - Making changes from a branch on your local:
     `git checkout -b name_of_topic_branch`
 
-- Updating your local master before merging your branch changes:
+- Updating your local master before merging your branch changes:re
     `git pull upstream master`
 
 - Merging your topic branch to your local master:
