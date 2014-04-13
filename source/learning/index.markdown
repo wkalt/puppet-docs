@@ -11,7 +11,7 @@ toc: false
 <h1 class="lvm-promo">New and Improved Learning VM</h1>
 <div class="lvm-promo">
 
-	<div style="float:left;margin:1.5em;width:45%;">
+	<div style="float:left;padding:1em 2.5em;width:50%;">
 		<h2 class="lvm-promo">Now with fun quests to learn Puppet at your own pace</h2>
 
 		<p>It's never been easier or more fun to learn the basics of Puppet IT automation software. From Puppet resources to manifests to classes and more, the quest-based Learning VM will get you ramped up in no time.</p>
@@ -20,8 +20,8 @@ toc: false
 
 	</div>
 
-	<div style="float:right;width:40%;margin:1em;">
-		<img src="/learning/images/lvm_cover_docs.png" height="200" width="170" alt="The New, Quest-Based Learning Puppet VM" />
+	<div style="float:left;margin:1em;">
+		<img src="/learning/images/lvm_cover_docs.png" height="200" width="180" alt="The New, Quest-Based Learning Puppet VM" />
 	</div>
 
 <br style="clear:both;" />
