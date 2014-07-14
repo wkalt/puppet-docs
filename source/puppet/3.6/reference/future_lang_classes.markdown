@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Language: Classes"
+title: "Future Language: Classes"
 canonical: "/puppet/latest/reference/lang_classes.html"
 ---
 
@@ -92,6 +92,7 @@ Defining a class makes it available for later use. It doesn't yet add any resour
 
 The general form of a class definition is:
 
+* The optional `private` keyword
 * The `class` keyword
 * The [name][allowed] of the class
 * An optional **set of parameters,** which consists of:
@@ -407,55 +408,6 @@ Assigning Classes From an ENC
 -----
 
 Classes can also be assigned to nodes by [external node classifiers][enc] and [LDAP node data][ldap_nodes]. Note that most ENCs assign classes with include-like behavior, and some ENCs assign them with resource-like behaior. See the [documentation of the ENC interface][enc] or the documentation of your specific ENC for complete details.
-
-
-
-
-
-[aside_history]: #aside-writing-for-multiple-puppet-versions
-
-> Aside: Writing for Multiple Puppet Versions
-> -----
->
-> Hiera integration and automatic parameter lookup were new features in Puppet 3; older versions may install the Hiera functions as an add-on, but will not automatically find parameters. If you are writing code for multiple Puppet versions, you have several options:
->
-> ### Expect Users to Handle Parameters
->
-> The simplest approach is to not look back, and expect Puppet 2.x users to use resource-like declarations. This isn't the friendliest approach, but many modules did this even before auto-parameters were available, and users are accustomed to a subset of their modules requiring it.
->
-> ### Use Hiera Functions in Default Values
->
-> If you are willing to require Hiera and the `hiera-puppet` add-on package for pre-3.0 users, you can emulate Puppet 3's behavior by using a `hiera` function call in each parameter's default value:
-
-{% highlight ruby %}
-    class example ( $parameter_one = hiera('example::parameter_one'), $parameter_two = hiera('example::parameter_two') ) {
-      ...
-    }
-{% endhighlight %}
-
-> Be sure to use 3.0-compatible lookup keys (`<class name>::<parameter>`). This will let 2.x users declare the class with `include`, and their Hiera data will continue to work without changes once they upgrade to Puppet 3.
->
-> This approach can also be combined with the "params class" pattern, if default values are necessary:
-
-{% highlight ruby %}
-    class example (
-      $parameter_one = hiera('example::parameter_one', $example::params::parameter_one),
-      $parameter_two = hiera('example::parameter_two', $example::params::parameter_two)
-    ) inherits example::params { # Inherit the params class to let the parameter list see its variables.
-      ...
-    }
-{% endhighlight %}
-
-> The drawbacks of this approach are:
->
-> * It requires 2.x users to install Hiera and `hiera-puppet`.
-> * It's slower on Puppet 3 --- if you don't set a value in your external data, Puppet will do _two_ searches before falling back to the default value.
->
-> However, depending on your needs, it can be a useful stopgap until all of your users are off Puppet 2.7.
->
-> ### Avoid Class Parameters
->
-> Prior to Puppet 2.6, classes could only request data by reading arbitrary variables outside their local [scope][]. It is still possible to design classes like this. **However,** since dynamic scope was removed in Puppet 3, old-style classes can only read **top-scope or node-scope** variables, which makes them less flexible than they were in previous versions. Your best options for using old-style classes with Puppet 3 are to use an ENC to set your classes' variables, or to manually insert `$special_variable = hiera('class::special_variable')` calls at top scope in your site manifest.
 
 
 
