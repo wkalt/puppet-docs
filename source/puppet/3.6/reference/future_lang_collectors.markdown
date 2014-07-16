@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Language: Resource Collectors"
+title: "Future Language: Resource Collectors"
 canonical: "/puppet/latest/reference/lang_collectors.html"
 ---
 
@@ -96,7 +96,12 @@ Location
 
 Resource collectors may be used as independent statements, as the operand of a [chaining statement][chaining], or in a [collector attribute block][amend] for amending resource attributes.
 
-Notably, collectors **cannot** be used as the value of a resource attribute, the argument of a function, or the operand of an expression.
+Notably, collectors **cannot** be used in the following contexts:
+
+- as the value of a resource attribute
+- as the argument of a function
+- within an array
+- as the operand of an expression.
 
 
 Behavior
