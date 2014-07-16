@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Language: Comments"
+title: "Future Language: Comments"
 canonical: "/puppet/latest/reference/lang_comments.html"
 ---
 
