@@ -1,5 +1,5 @@
 ---
-title: "Language: Conditional Statements"
+title: "Future Language: Conditional Statements"
 layout: default
 canonical: "/puppet/latest/reference/lang_conditional.html"
 ---
@@ -23,7 +23,7 @@ Conditional statements let your Puppet code behave differently in different situ
 Summary
 -----
 
-Puppet supports "if" and "unless" statements, case statements, and selectors.
+Puppet supports "if" and "unless" statements, "case" statements, and selectors.
 
 An "if" statement:
 
@@ -144,7 +144,7 @@ These are not normal variables, and have some special behaviors:
 "Unless" Statements
 -----
 
-**"Unless" statements** work like reversed "if" statements. They take a [boolean][] condition and an arbitrary block of Puppet code, and will only execute the block if the condition is **false.** They **cannot** include `elsif` or `else` clauses.
+**"Unless" statements** work like reversed "if" statements. They take a [boolean][] condition and an arbitrary block of Puppet code, and will only execute the block if the condition is **false.** They **cannot** include `elsif` clauses.
 
 ### Syntax
 
@@ -159,8 +159,9 @@ The general form of an "unless" statement is:
 * The `unless` keyword
 * A **condition**
 * A pair of curly braces containing any Puppet code
+* **Optionally:** the `else` keyword and a pair of curly braces containing Puppet code
 
-If an `else` or `elsif` clause is included in an "unless" statement, it is a syntax error and will cause compilation to fail.
+If an `elsif` clause is included in an "unless" statement, it is a syntax error and will cause compilation to fail.
 
 ### Behavior
 
@@ -180,7 +181,7 @@ Static values may also be conditions, although doing this would be pointless.
 
 #### Regex Capture Variables
 
-Although "unless" statements receive regex capture variables like "if" statements, they generally can't be used, since the code in the statement will only be executed if the condition didn't match anything. Compound conditions can cause the capture variables to be set inside the statement, but this is essentially useless.
+Although "unless" statements receive regex capture variables like "if" statements, they usually aren't used, since the code in the statement will only be executed if the condition didn't match anything. It's possible to use regex captures in the "else" clause, but it would make more sense to just use an "if" statement.
 
 
 
@@ -323,7 +324,7 @@ In the example above, the value of `$rootgroup` is determined using the value of
 
 The general form of a selector is:
 
-* A **control variable**
+* A **control expression**
 * The `?` (question mark) keyword
 * An opening curly brace
 * Any number of possible matches, each of which consists of:
@@ -337,7 +338,7 @@ The general form of a selector is:
 
 The entire selector statement is **treated as a single value.**
 
-Puppet compares the **control variable** to each of the **cases,** in the order they are listed. When it finds a matching case, it will treat that value as the value of the statement and ignore the remainder of the statement.
+Puppet compares the value of **control expression** to each of the **cases,** in the order they are listed. When it finds a matching case, it will treat that value as the value of the statement and ignore the remainder of the statement.
 
 * Basic cases are compared with [the `==` operator][equality] (which is case-insensitive).
 * Regular expression cases are compared with [the `=~` operator][regex_compare] (which is case-sensitive).
@@ -345,9 +346,13 @@ Puppet compares the **control variable** to each of the **cases,** in the order 
 
 If none of the cases match, Puppet will **fail compilation with a parse error.** Consequently, a default case should be considered mandatory.
 
-### Control Variables
+### Control Expressions
 
-Control variables in selectors must be **variables** or **functions that return values.** You cannot use expressions as control variables.
+The control expression of a selector may be any fragment of Puppet code that resolves to a normal value. This includes:
+
+* [Variables][]
+* [Expressions][]
+* [Functions][] that return values
 
 ### Cases
 
